@@ -66,13 +66,9 @@ class Train
 
   def set_type(type)
     unless ALLOWED_TYPES.include?(type)
-  raise "Invalid train type: #{type}. Allowed types are #{ALLOWED_TYPES.join(', ')}."
+      raise "Invalid train type: #{type}. Allowed types are #{ALLOWED_TYPES.join(', ')}."
     end
-
     @train_type = type
-
-
-
   end
 
   def number
