@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 # Запрашиваем у пользователя день, месяц и год
-puts "Введите день:"
+puts 'Введите день:'
 day = gets.to_i
-puts "Введите месяц:"
+puts 'Введите месяц:'
 month = gets.to_i
-puts "Введите год:"
+puts 'Введите год:'
 year = gets.to_i
 
 # Функция для проверки, является ли год високосным
 def leap_year?(year)
-  (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
+  ((year % 4).zero? && year % 100 != 0) || (year % 400).zero?
 end
 
 # Массив с количеством дней в каждом месяце
