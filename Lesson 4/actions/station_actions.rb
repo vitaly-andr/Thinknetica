@@ -31,7 +31,7 @@ def station_actions(stations_manager)
       puts UIHelpers.green('Список всех станций:')
       stations_manager.list
       name = UIHelpers.get_user_input('Введите название станции для переименования:')
-      new_name = get_user_input('Введите новое название станции:')
+      new_name = UIHelpers.get_user_input('Введите новое название станции:')
       stations_manager.rename(name, new_name)
     when 4
       puts UIHelpers.green('Список всех станций:')
