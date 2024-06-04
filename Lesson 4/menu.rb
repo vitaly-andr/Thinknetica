@@ -9,7 +9,6 @@ class Menu
   end
 
   def display
-    print "\033[H\033[2J"
     options.each { |key, value| puts "#{key}. #{value}" }
     print "#{prompt} "
   end
