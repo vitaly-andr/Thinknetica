@@ -1,7 +1,26 @@
+require_relative '../modules/manufacturer'
+require_relative '../modules/instance_counter'
 class Train
+  extend Manufacturer
+  include InstanceCounter
+
   attr_accessor :speed, :route
   attr_reader :number, :cars, :current_station_index
+
   # Так как напрямую объекты Train не создаются никогда я сделал инициализацию private (подклассы его видят)
+
+  @trains = {}
+  class << self
+    attr_accessor :trains
+
+    def find(train_number)
+      @trains[train_number]
+    end
+
+    def add_train(train)
+      @trains[train.number] = train
+    end
+  end
 
   private
 
@@ -10,6 +29,8 @@ class Train
     @speed = 0
     @cars = []
     @route = nil
+    self.class.add_train(self)
+    register_instance
   end
 
   public

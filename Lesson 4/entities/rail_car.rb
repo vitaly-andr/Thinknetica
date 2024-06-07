@@ -1,4 +1,7 @@
+require_relative '../modules/manufacturer'
+
 class RailCar
+  extend Manufacturer
   attr_accessor :attached_to
   attr_reader :car_number
   # Так как напрямую объекты Train не создаются никогда я сделал инициализацию private (подклассы его видят)
