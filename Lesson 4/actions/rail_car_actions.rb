@@ -23,7 +23,8 @@ def rail_car_actions(rail_car_manager)
       rail_car_manager.list_cars
       car_type = UIHelpers.get_user_input('Введите тип вагона (passenger/cargo):')
       car_number = UIHelpers.get_user_input('Введите номер вагона:')
-      rail_car_manager.create(car_type, car_number)
+      manufacturer = UIHelpers.get_user_input('Введите производителя')
+      rail_car_manager.create(car_type, car_number, manufacturer)
     when 2
       puts UIHelpers.green('Список всех вагонов:')
       rail_car_manager.list_cars

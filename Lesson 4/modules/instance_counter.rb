@@ -20,5 +20,9 @@ module InstanceCounter
       self.class.instances ||= 0
       self.class.instances += 1
     end
+
+    def deregister_instance
+      self.class.instances -= 1
+    end
   end
 end

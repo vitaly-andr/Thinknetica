@@ -30,8 +30,9 @@ def train_actions(train_manager, rail_car_manager, routes_manager)
       puts UIHelpers.green('Список всех поездов:')
       train_manager.list
       train_number = UIHelpers.get_user_input('Введите номер нового поезда:')
+      train_manufacturer = UIHelpers.get_user_input('Введите производителя')
       train_type = UIHelpers.get_user_input("Введите тип поезда (#{TrainsManager::ALLOWED_TYPES.join('/')}):")
-      train_manager.create(train_number, train_type)
+      train_manager.create(train_number, train_type, train_manufacturer)
     when 2
       puts UIHelpers.green('Список всех поездов:')
       train_manager.list
@@ -59,6 +60,8 @@ def train_actions(train_manager, rail_car_manager, routes_manager)
       puts UIHelpers.green('Список всех поездов:')
       train_manager.list
     when 9
+      puts UIHelpers.green('Список всех поездов:')
+      train_manager.list
       train_number = UIHelpers.get_user_input('Введите номер поезда для установки скорости:')
       train_speed = UIHelpers.get_user_input('Введите скорость:').to_i
       train_manager.set_speed(train_number, train_speed)
@@ -79,7 +82,7 @@ def add_car_to_train(train_manager, rail_car_manager)
   number = UIHelpers.get_user_input('Введите номер поезда:')
 
   puts "Выберите вагон для добавления к поезду #{number}:"
-  available_cars = rail_car_manager.list_cars(true)
+  available_cars = rail_car_manager.list_cars(free_filter: true)
   puts UIHelpers.green('Свободные вагоны')
   available_cars.each_with_index do |car, index|
     puts UIHelpers.green("#{index + 1}. Вагон №#{car.car_number} типа #{car.class}")
