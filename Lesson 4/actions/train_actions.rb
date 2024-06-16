@@ -4,6 +4,57 @@ require_relative '../managers/trains_manager'
 require_relative '../managers/rail_car_manager'
 require_relative '../managers/routes_manager'
 
+def create_train(train_manager)
+  train_number = UIHelpers.get_user_input('Введите номер нового поезда:')
+  train_manufacturer = UIHelpers.get_user_input('Введите производителя')
+  train_type = UIHelpers.get_user_input("Введите тип поезда (#{TrainsManager::ALLOWED_TYPES.join('/')}):")
+  train_manager.create(train_number, train_type, train_manufacturer)
+end
+
+def delete_train(train_manager)
+  train_number = UIHelpers.get_user_input('Введите номер поезда для удаления:')
+  train_manager.delete(train_number)
+end
+
+def remove_car_from_train(train_manager)
+  train_number = UIHelpers.get_user_input('Введите номер поезда для отцепления вагона:')
+  train_manager.remove_car(train_number)
+end
+
+def assign_route_to_train(routes_manager, train_manager)
+  train_number = UIHelpers.get_user_input('Введите номер поезда для назначения маршрута:')
+  routes_manager.list
+  route_index = UIHelpers.get_user_input('Введите индекс маршрута:').to_i
+  route = routes_manager.get_route(route_index)
+  train_manager.assign_route(train_number, route)
+end
+
+def move_train_forward(train_manager)
+  train_number = UIHelpers.get_user_input('Введите номер поезда для перемещения вперед по маршруту:')
+  train_manager.move_forward(train_number)
+end
+
+def move_train_backward(train_manager)
+  train_number = UIHelpers.get_user_input('Введите номер поезда для перемещения назад по маршруту:')
+  train_manager.move_backward(train_number)
+end
+
+def show_list_of_trains(train_manager)
+  puts UIHelpers.green('Список всех поездов:')
+  train_manager.list
+end
+
+def set_trains_speed(train_manager)
+  train_number = UIHelpers.get_user_input('Введите номер поезда для установки скорости:')
+  train_speed = UIHelpers.get_user_input('Введите скорость:').to_i
+  train_manager.set_speed(train_number, train_speed)
+end
+
+def stop_train(train_manager)
+  train_number = UIHelpers.get_user_input('Введите номер поезда, который остановить:')
+  train_manager.brake(train_number)
+end
+
 def train_actions(train_manager, rail_car_manager, routes_manager)
   train_menu = Menu.new(
     {
@@ -25,49 +76,30 @@ def train_actions(train_manager, rail_car_manager, routes_manager)
     choice = train_menu.get_choice
     next if choice.nil?
 
+    menu_options_requiring_train_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    show_list_of_trains(train_manager) if menu_options_requiring_train_list.include?(choice)
+
     case choice
     when 1
-      puts UIHelpers.green('Список всех поездов:')
-      train_manager.list
-      train_number = UIHelpers.get_user_input('Введите номер нового поезда:')
-      train_manufacturer = UIHelpers.get_user_input('Введите производителя')
-      train_type = UIHelpers.get_user_input("Введите тип поезда (#{TrainsManager::ALLOWED_TYPES.join('/')}):")
-      train_manager.create(train_number, train_type, train_manufacturer)
+      create_train(train_manager)
     when 2
-      puts UIHelpers.green('Список всех поездов:')
-      train_manager.list
-      train_number = UIHelpers.get_user_input('Введите номер поезда для удаления:')
-      train_manager.delete(train_number)
+      delete_train(train_manager)
     when 3
       add_car_to_train(train_manager, rail_car_manager)
     when 4
-      train_number = UIHelpers.get_user_input('Введите номер поезда для отцепления вагона:')
-      train_manager.remove_car(train_number)
+      remove_car_from_train(train_manager)
     when 5
-      train_manager.list
-      train_number = UIHelpers.get_user_input('Введите номер поезда для назначения маршрута:')
-      routes_manager.list
-      route_index = UIHelpers.get_user_input('Введите индекс маршрута:').to_i
-      route = routes_manager.get_route(route_index)
-      train_manager.assign_route(train_number, route)
+      assign_route_to_train(routes_manager, train_manager)
     when 6
-      train_number = UIHelpers.get_user_input('Введите номер поезда для перемещения вперед по маршруту:')
-      train_manager.move_forward(train_number)
+      move_train_forward(train_manager)
     when 7
-      train_number = UIHelpers.get_user_input('Введите номер поезда для перемещения назад по маршруту:')
-      train_manager.move_backward(train_number)
+      move_train_backward(train_manager)
     when 8
-      puts UIHelpers.green('Список всех поездов:')
-      train_manager.list
+      # Пункт 8 теперь просто показывает список поездов
     when 9
-      puts UIHelpers.green('Список всех поездов:')
-      train_manager.list
-      train_number = UIHelpers.get_user_input('Введите номер поезда для установки скорости:')
-      train_speed = UIHelpers.get_user_input('Введите скорость:').to_i
-      train_manager.set_speed(train_number, train_speed)
+      set_trains_speed(train_manager)
     when 10
-      train_number = UIHelpers.get_user_input('Введите номер поезда, который остановить:')
-      train_manager.brake(train_number)
+      stop_train(train_manager)
     when 0
       break
     else
@@ -77,8 +109,6 @@ def train_actions(train_manager, rail_car_manager, routes_manager)
 end
 
 def add_car_to_train(train_manager, rail_car_manager)
-  puts UIHelpers.green('Список поездов')
-  train_manager.list
   number = UIHelpers.get_user_input('Введите номер поезда:')
 
   puts "Выберите вагон для добавления к поезду #{number}:"
