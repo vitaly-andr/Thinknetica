@@ -8,30 +8,56 @@ def create_train(train_manager)
   train_number = UIHelpers.get_user_input('Введите номер нового поезда:')
   train_manufacturer = UIHelpers.get_user_input('Введите производителя')
   train_type = UIHelpers.get_user_input("Введите тип поезда (#{TrainsManager::ALLOWED_TYPES.join('/')}):")
-  train_manager.create(train_number, train_type, train_manufacturer)
+  begin
+    result = train_manager.create(train_number, train_type, train_manufacturer)
+    puts UIHelpers.green(result)
+  rescue StandardError => e
+    puts UIHelpers.red(e.message)
+  end
 end
 
 def delete_train(train_manager)
   train_number = UIHelpers.get_user_input('Введите номер поезда для удаления:')
-  train_manager.delete(train_number)
+  begin
+    result = train_manager.delete(train_number)
+    puts UIHelpers.green(result)
+  rescue StandardError => e
+    puts UIHelpers.red(e.message)
+  end
 end
 
 def remove_car_from_train(train_manager)
   train_number = UIHelpers.get_user_input('Введите номер поезда для отцепления вагона:')
-  train_manager.remove_car(train_number)
+  begin
+    result = train_manager.remove_car(train_number)
+    puts UIHelpers.green(result)
+  rescue StandardError => e
+    puts UIHelpers.red(e.message)
+  end
 end
 
 def assign_route_to_train(routes_manager, train_manager)
   train_number = UIHelpers.get_user_input('Введите номер поезда для назначения маршрута:')
   routes_manager.list
   route_index = UIHelpers.get_user_input('Введите индекс маршрута:').to_i
-  route = routes_manager.get_route(route_index)
-  train_manager.assign_route(train_number, route)
+  begin
+    route = routes_manager.get_route(route_index)
+  rescue StandardError => e
+    puts UIHelpers.red(e.message)
+  end
+
+  begin
+    result = train_manager.assign_route(train_number, route)
+    puts UIHelpers.green(result)
+  rescue StandardError => e
+    puts UIHelpers.red(e.message)
+  end
 end
 
 def move_train_forward(train_manager)
   train_number = UIHelpers.get_user_input('Введите номер поезда для перемещения вперед по маршруту:')
   train_manager.move_forward(train_number)
+
 end
 
 def move_train_backward(train_manager)

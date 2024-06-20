@@ -35,8 +35,17 @@ class RailCar
     @car_number = car_number
     @attached_to = nil
     @name = manufacturer
+    validate!
     self.class.add_car(self)
     register_instance
+
+  end
+
+  def validate!
+    raise 'Номер вагона не может быть пустым' if @car_number.nil? || @car_number.empty?
+    return if @car_number =~ /^[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/
+
+    raise 'номер вагона должен состоять из 3 букв или цифр, затем опционального дефиса и затем 2 букв или цифр.'
 
   end
 end

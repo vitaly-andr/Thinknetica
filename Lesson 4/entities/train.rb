@@ -39,11 +39,28 @@ class Train
     @speed = 0
     @cars = []
     @route = nil
+    validate!
     self.class.add_train(self)
     register_instance
   end
 
+  def validate!
+    raise 'Номер поезда не может быть пустым' if @number.nil? || @number.empty?
+    return if @number =~ /^[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/
+
+    raise 'номер поезда должен состоять из 3 букв или цифр, затем опционального дефиса и затем 2 букв или цифр.'
+
+  end
+
   public
+
+  def valid?
+    validate!
+    true
+  rescue StandardError => e
+    @last_error = e.message
+    false
+  end
 
   def add_car(car)
     raise 'Нельзя прицепить вагон, пока поезд движется.' unless @speed.zero?
@@ -60,7 +77,6 @@ class Train
     car.attached_to = nil
     @cars.delete(car)
   end
-  # Мне кажется логично хранить отцепленные вагоны на соответствующих станциях, но на этом этапе в задании этого нет
 
   def accept_route(route)
     @route = route
@@ -85,3 +101,4 @@ class Train
     @current_station_index -= 1
   end
 end
+

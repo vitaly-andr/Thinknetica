@@ -8,30 +8,25 @@ class RailCarManager
 
   def create(car_type, car_number, manufacturer)
     type = car_type.strip.downcase.to_sym # Преобразуем введенную строку в символ
-    unless ALLOWED_TYPES.include?(type)
-      puts UIHelpers.red("Неверный тип вагона. Допустимые типы: #{ALLOWED_TYPES.join(', ')}.")
-      return
-    end
+    raise "Неверный тип вагона. Допустимые типы: #{ALLOWED_TYPES.join(', ')}." unless ALLOWED_TYPES.include?(type)
+
     # Проверка на уникальность номера вагона
     car = find(car_number)
-    if car
-      puts UIHelpers.red("Вагон с номером '#{car_number}' уже существует.")
-    else
-      type == :passenger ? PassengerCar.new(car_number, manufacturer) : CargoCar.new(car_number, manufacturer)
+    raise "Вагон с номером '#{car_number}' уже существует." if car
 
-      puts UIHelpers.green("Вагон '#{car_number}' успешно создан.")
-    end
+    type == :passenger ? PassengerCar.new(car_number, manufacturer) : CargoCar.new(car_number, manufacturer)
+
+    "Вагон '#{car_number}' успешно создан."
 
   end
 
   def delete(car_number)
     car = find(car_number)
-    if car
-      car.class.delete(car)
-      puts UIHelpers.green("Вагон номер '#{car_number}' успешно удален.")
-    else
-      puts UIHelpers.red("Вагон номер '#{car_number}' не найден.")
-    end
+    raise "Вагон номер '#{car_number}' не найден." unless car
+
+    car.class.delete(car)
+    puts UIHelpers.green("Вагон номер '#{car_number}' успешно удален.")
+
   end
 
   # Prints list and returns unattached cars

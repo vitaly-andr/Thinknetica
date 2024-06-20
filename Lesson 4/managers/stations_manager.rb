@@ -3,31 +3,28 @@ require_relative '../helpers/ui_helpers'
 class StationsManager
 
   def create(name)
-    if Station.find_by_name(name)
-      puts UIHelpers.red("Станция с названием '#{name}' уже существует.")
-    else
-      Station.new(name)
-      puts UIHelpers.green("Станция '#{name}' успешно создана.")
-    end
+    raise "Станция с названием '#{name}' уже существует." if Station.find_by_name(name)
+
+    Station.new(name)
+    puts UIHelpers.green("Станция '#{name}' успешно создана.")
+
   end
 
   def delete(name)
-    if Station.find_by_name(name)
-      Station.delete_by_name(name)
-      puts UIHelpers.green("Станция '#{name}' была удалена.")
-    else
-      puts UIHelpers.red("Станция '#{name}' не найдена.")
-    end
+    raise "Станция '#{name}' не найдена." unless Station.find_by_name(name)
+
+    Station.delete_by_name(name)
+    "Станция '#{name}' была удалена."
+
   end
 
   def rename(old_name, new_name)
     station = Station.find_by_name(old_name)
-    if station
-      station.name = new_name
-      puts UIHelpers.green("Станция '#{old_name}' переименована в '#{new_name}'.")
-    else
-      puts UIHelpers.red("Станция '#{old_name}' не найдена.")
-    end
+    raise "Станция '#{old_name}' не найдена." unless station
+
+    station.name = new_name
+    "Станция '#{old_name}' переименована в '#{new_name}'."
+
   end
 
   def find_or_create(name)

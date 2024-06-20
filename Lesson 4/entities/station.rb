@@ -30,8 +30,14 @@ class Station
 
   def initialize(name)
     @name = name
+    validate!
     self.class.add_station(self)
     register_instance
+  end
+
+  private
+  def validate!
+    raise 'Имя станции не может быть пустым' if @name.nil? || @name.empty?
   end
 end
 

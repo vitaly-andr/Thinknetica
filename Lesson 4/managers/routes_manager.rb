@@ -9,7 +9,10 @@ class RoutesManager
   end
 
   def get_route(index)
-    Route.all[index] if index >= 0 && index < Route.all.length
+    raise 'Недопустимый индекс' unless index >= 0 && index < Route.all.length
+
+    Route.all[index]
+
   end
 
   def delete(index)

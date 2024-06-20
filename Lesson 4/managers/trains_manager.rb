@@ -8,28 +8,22 @@ class TrainsManager
 
   def create(train_number, type_str, train_manufacturer)
     type = type_str.strip.downcase.to_sym # Преобразуем введенную строку в символ
-    unless ALLOWED_TYPES.include?(type)
-      puts UIHelpers.red("Неверный тип поезда. Допустимые типы: #{ALLOWED_TYPES.join(', ')}.")
-      return
-    end
-    train = find(train_number)
-    if train
-      puts UIHelpers.red("Поезд с номером '#{train_number}' уже существует.")
-    else
-      type == :passenger ? PassengerTrain.new(train_number, train_manufacturer) : CargoTrain.new(train_number, train_manufacturer)
+    raise "Неверный тип поезда. Допустимые типы: #{ALLOWED_TYPES.join(', ')}." unless ALLOWED_TYPES.include?(type)
 
-      puts UIHelpers.green("Поезд '#{train_number}' успешно создан.")
-    end
+    train = find(train_number)
+    raise "Поезд с номером '#{train_number}' уже существует." if train
+
+    train = type == :passenger ? PassengerTrain.new(train_number, train_manufacturer) : CargoTrain.new(train_number, train_manufacturer)
+    "Поезд '#{train_number}' успешно создан." if train
   end
 
   def delete(train_number)
     train = find(train_number)
-    if train
-      train.class.delete(train)
-      puts UIHelpers.green("Поезд '#{train_number}' был удален.")
-    else
-      puts UIHelpers.red("Поезд с номером '#{train_number}' не найден.")
-    end
+    raise "Поезд с номером '#{train_number}' не найден." unless train
+
+    train.class.delete(train)
+    "Поезд '#{train_number}' был удален."
+
   end
 
   def get_route(train_number)
@@ -54,8 +48,7 @@ class TrainsManager
     puts 'Зарегистрировано грузовых поездов'
     puts CargoTrain.instances
 
-    all_trains = PassengerTrain.all + CargoTrain.all # Объединяем массивы всех поездов    puts "All trains: #{all_trains.inspect}" # Отладочное сообщение
-
+    all_trains = PassengerTrain.all + CargoTrain.all
     all_trains.each do |train|
       route = train.route
       route_str = route ? route.stations_list.map(&:name).join(' -> ') : ''
@@ -126,8 +119,8 @@ class TrainsManager
 
   def remove_car(train_number)
     train = find(train_number)
-    return puts UIHelpers.red("Поезд с номером '#{train_number}' не найден.") unless train
-    return puts UIHelpers.red('У поезда нет прицепленных вагонов.') if train.cars.empty?
+    raise "Поезд с номером '#{train_number}' не найден." unless train
+    raise 'У поезда нет прицепленных вагонов.' if train.cars.empty?
 
     puts UIHelpers.green('Список вагонов поезда')
     train.cars.each_with_index do |car, index|
@@ -150,10 +143,10 @@ class TrainsManager
 
   def assign_route(train_number, route)
     train = find(train_number)
-    return puts UIHelpers.red("Поезд с номером '#{train_number}' не найден.") unless train
+    raise "Поезд с номером '#{train_number}' не найден." unless train
 
     train.accept_route(route)
-    puts UIHelpers.green("Поезду с номером '#{train_number}' успешно назначен маршрут.")
+    "Поезду с номером '#{train_number}' успешно назначен маршрут."
   end
 
   def find(train_number)
