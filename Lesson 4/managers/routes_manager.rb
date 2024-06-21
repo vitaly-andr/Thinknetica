@@ -2,7 +2,6 @@
 require_relative '../entities/route'
 
 class RoutesManager
-
   def create(start_station, end_station)
     Route.new(start_station, end_station)
     puts UIHelpers.green("Маршрут от станции '#{start_station.name}' до станции '#{end_station.name}' успешно создан.")
@@ -12,7 +11,6 @@ class RoutesManager
     raise 'Недопустимый индекс' unless index >= 0 && index < Route.all.length
 
     Route.all[index]
-
   end
 
   def delete(index)
@@ -43,7 +41,7 @@ class RoutesManager
   end
 
   def list
-    puts UIHelpers.green( 'Зарегистрировано маршрутов')
+    puts UIHelpers.green('Зарегистрировано маршрутов')
     puts Route.instances
     puts UIHelpers.green('Список маршрутов')
     Route.all.each_with_index do |route, index|

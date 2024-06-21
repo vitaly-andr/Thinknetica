@@ -4,7 +4,6 @@ class Route
   include InstanceCounter
 
   class << self
-
     def all
       @all ||= []
     end
@@ -23,7 +22,6 @@ class Route
 
       all.delete(route)
       route.send(:deregister_instance)
-
     end
   end
   def initialize(station_start, station_end)

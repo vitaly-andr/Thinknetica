@@ -3,9 +3,7 @@ class Station
   include InstanceCounter
   attr_accessor :name, :trains
 
-
   class << self
-
     def all
       @all ||= []
     end
@@ -24,7 +22,6 @@ class Station
 
       all.delete(station)
       station.send(:deregister_instance)
-
     end
   end
 
@@ -50,8 +47,8 @@ class Station
   end
 
   private
+
   def validate!
     raise 'Имя станции не может быть пустым' if @name.nil? || @name.empty?
   end
 end
-

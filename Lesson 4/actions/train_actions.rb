@@ -49,7 +49,6 @@ def assign_route_to_train(routes_manager, train_manager)
   begin
     result = train_manager.assign_route(train_number, route)
     puts UIHelpers.green(result)
-
   rescue StandardError => e
     puts UIHelpers.red(e.message)
   end
@@ -58,7 +57,6 @@ end
 def move_train_forward(train_manager)
   train_number = UIHelpers.get_user_input('Введите номер поезда для перемещения вперед по маршруту:')
   train_manager.move_forward(train_number)
-
 end
 
 def move_train_backward(train_manager)

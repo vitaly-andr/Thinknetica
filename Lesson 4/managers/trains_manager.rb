@@ -23,9 +23,7 @@ class TrainsManager
 
     train.class.delete(train)
     "Поезд '#{train_number}' был удален."
-
   end
-
   def get_route(train_number)
     train = find(train_number)
     return puts UIHelpers.red("Поезд с номером '#{train_number}' не найден.") unless train
@@ -152,21 +150,18 @@ class TrainsManager
     train.accept_route(route)
     register_train_on_station(train)
     "Поезду с номером '#{train_number}' успешно назначен маршрут."
-
   end
 
   def register_train_on_station(train)
     route = train.route
     station = route.stations_list[train.current_station_index]
     station.add_train(train)
-
   end
 
   def unregister_train_on_station(train)
     route = train.route
     station = route.stations_list[train.current_station_index]
     station.remove_train(train)
-
   end
 
   def unboard_passengers(train_number)
@@ -275,7 +270,5 @@ class TrainsManager
   def find(train_number)
     train = PassengerTrain.find(train_number)
     train || CargoTrain.find(train_number)
-
   end
-
 end

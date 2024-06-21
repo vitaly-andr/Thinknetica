@@ -8,7 +8,6 @@ class RailCar
   attr_reader :car_number
 
   class << self
-
     def all
       @all ||= []
     end
@@ -22,11 +21,9 @@ class RailCar
     end
 
     def delete(car)
-
       all.delete(car)
       car.send(:deregister_instance)
     end
-
   end
 
   private
@@ -38,7 +35,6 @@ class RailCar
     validate!
     self.class.add_car(self)
     register_instance
-
   end
 
   def validate!
@@ -46,6 +42,5 @@ class RailCar
     return if @car_number =~ /^[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/
 
     raise 'номер вагона должен состоять из 3 букв или цифр, затем опционального дефиса и затем 2 букв или цифр.'
-
   end
 end

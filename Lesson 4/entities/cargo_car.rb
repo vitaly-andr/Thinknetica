@@ -23,5 +23,4 @@ class CargoCar < RailCar
   def available_volume
     @total_volume - @occupied_volume
   end
-
 end

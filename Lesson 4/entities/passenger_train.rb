@@ -7,4 +7,3 @@ class PassengerTrain < Train
     super(car)
   end
 end
-

@@ -10,7 +10,6 @@ class Train
   # Так как напрямую объекты Train не создаются никогда я сделал инициализацию private (подклассы его видят)
 
   class << self
-
     def all
       @all ||= []
     end
@@ -24,16 +23,14 @@ class Train
     end
 
     def delete(train)
-
       all.delete(train)
       train.send(:deregister_instance)
     end
-
   end
 
   private
 
-  def initialize(train_number, manufacturer_name )
+  def initialize(train_number, manufacturer_name)
     @number = train_number
     @name = manufacturer_name
     @speed = 0
@@ -49,7 +46,6 @@ class Train
     return if @number =~ /^[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/
 
     raise 'номер поезда должен состоять из 3 букв или цифр, затем опционального дефиса и затем 2 букв или цифр.'
-
   end
 
   public
@@ -101,4 +97,3 @@ class Train
     @current_station_index -= 1
   end
 end
-
