@@ -8,12 +8,14 @@ require_relative 'managers/rail_car_manager'
 require_relative 'actions/rail_car_actions'
 require_relative 'menu'
 require_relative 'helpers/ui_helpers'
+require_relative 'actions/seed_action'
 
 def main
   stations_manager = StationsManager.new
   trains_manager = TrainsManager.new
   routes_manager = RoutesManager.new
   rail_car_manager = RailCarManager.new
+  seed_action = SeedAction.new
   main_menu = Menu.new(
     {
       1 => 'Управление станциями',
@@ -21,6 +23,7 @@ def main
       3 => 'Управление маршрутами',
       4 => 'Управление вагонами',
       5 => 'Просмотреть список станций и список поездов на станции',
+      100 => 'Засеять демо данными',
       0 => 'Выход'
 
     }
@@ -41,7 +44,9 @@ def main
     when 4
       rail_car_actions(rail_car_manager)
     when 5
-      # Реализация показа
+      stations_manager.list_stations_and_trains
+    when 100
+      seed_action.seed(trains_manager, rail_car_manager, routes_manager, stations_manager)
     when 0
       break
     else

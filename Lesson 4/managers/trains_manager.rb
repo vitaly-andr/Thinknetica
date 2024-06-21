@@ -62,7 +62,9 @@ class TrainsManager
     train = find(train_number)
     if train
       begin
+        unregister_train_on_station(train)
         train.move_forward
+        register_train_on_station(train)
         puts UIHelpers.green('Поезд успешно перемещен.')
       rescue StandardError => e
         puts UIHelpers.red("Ошибка при перемщении поезда: #{e.message}")
@@ -76,7 +78,9 @@ class TrainsManager
     train = find(train_number)
     if train
       begin
+        unregister_train_on_station(train)
         train.move_backward
+        register_train_on_station(train)
         puts UIHelpers.green('Поезд успешно перемещен.')
       rescue StandardError => e
         puts UIHelpers.red("Ошибка при перемщении поезда: #{e.message}")
@@ -146,7 +150,126 @@ class TrainsManager
     raise "Поезд с номером '#{train_number}' не найден." unless train
 
     train.accept_route(route)
+    register_train_on_station(train)
     "Поезду с номером '#{train_number}' успешно назначен маршрут."
+
+  end
+
+  def register_train_on_station(train)
+    route = train.route
+    station = route.stations_list[train.current_station_index]
+    station.add_train(train)
+
+  end
+
+  def unregister_train_on_station(train)
+    route = train.route
+    station = route.stations_list[train.current_station_index]
+    station.remove_train(train)
+
+  end
+
+  def unboard_passengers(train_number)
+    train = find(train_number)
+    raise "Поезд с номером '#{train_number}' не найден." unless train
+    raise 'У поезда нет прицепленных вагонов.' if train.cars.empty?
+
+    puts UIHelpers.green('Список вагонов поезда')
+    train.cars.each_with_index do |car, index|
+      puts UIHelpers.green("#{index + 1}. Вагон №#{car.car_number} типа #{car.class} (Занятых мест: #{car.occupied_seats})")
+    end
+    car_index = UIHelpers.get_user_input('Введите номер вагона для посадки:').to_i - 1
+    car = train.cars[car_index]
+    if car
+      passengers = UIHelpers.get_user_input('Сколько пассажиров вы хотите высадить?').to_i
+      begin
+        initial_occupied_seats = car.occupied_seats
+        passengers.times { car.deoccupy_seat }
+        "Пассажиры успешно высажены из вагона №#{car.car_number}."
+      rescue StandardError => e
+        car.rollback_occupied_seats(initial_occupied_seats)
+        raise "Ошибка: #{e.message}"
+      end
+    else
+      puts UIHelpers.red('Некорректный выбор.')
+    end
+  end
+
+  def board_passengers(train_number)
+    train = find(train_number)
+    raise "Поезд с номером '#{train_number}' не найден." unless train
+    raise 'У поезда нет прицепленных вагонов.' if train.cars.empty?
+
+    puts UIHelpers.green('Список вагонов поезда')
+    train.cars.each_with_index do |car, index|
+      puts UIHelpers.green("#{index + 1}. Вагон №#{car.car_number} типа #{car.class} (Свободных мест: #{car.available_seats})")
+    end
+    car_index = UIHelpers.get_user_input('Введите номер вагона для посадки:').to_i - 1
+    car = train.cars[car_index]
+
+    if car
+      passengers = UIHelpers.get_user_input('Сколько пассажиров вы хотите посадить?').to_i
+      begin
+        initial_occupied_seats = car.occupied_seats
+        passengers.times { car.occupy_seat }
+        "Пассажиры успешно посажены в вагон №#{car.car_number}."
+      rescue StandardError => e
+        car.rollback_occupied_seats(initial_occupied_seats)
+        raise "Ошибка: #{e.message}"
+      end
+    else
+      puts UIHelpers.red('Некорректный выбор.')
+    end
+  end
+
+  def add_cargo_volume(train_number)
+    train = find(train_number)
+    raise "Поезд с номером '#{train_number}' не найден." unless train
+    raise 'У поезда нет прицепленных вагонов.' if train.cars.empty?
+
+    puts UIHelpers.green('Список вагонов поезда')
+    train.cars.each_with_index do |car, index|
+      puts UIHelpers.green("#{index + 1}. Вагон №#{car.car_number} типа #{car.class} (Свободный объем: #{car.available_volume})")
+    end
+    car_index = UIHelpers.get_user_input('Введите номер вагона для загрузки:').to_i - 1
+    car = train.cars[car_index]
+
+    if car
+      volume = UIHelpers.get_user_input('Какой объем Вы хотите загрузить?').to_i
+      begin
+        car.occupy_volume(volume)
+        "Груз успешно загружен в вагон №#{car.car_number}."
+      rescue StandardError => e
+        raise "Ошибка: #{e.message}"
+      end
+    else
+      puts UIHelpers.red('Некорректный выбор.')
+    end
+  end
+
+  def remove_cargo_volume(train_number)
+    train = find(train_number)
+    raise "Поезд с номером '#{train_number}' не найден." unless train
+    raise 'У поезда нет прицепленных вагонов.' if train.cars.empty?
+
+    puts UIHelpers.green('Список вагонов поезда')
+    train.cars.each_with_index do |car, index|
+      puts UIHelpers.green("#{index + 1}. Вагон №#{car.car_number} типа #{car.class} (Загруженный объем: #{car.occupied_volume})")
+    end
+    car_index = UIHelpers.get_user_input('Введите номер вагона для выгрузки:').to_i - 1
+    car = train.cars[car_index]
+
+    if car
+      volume = UIHelpers.get_user_input('Какой объем Вы хотите выгрузить?').to_i
+      begin
+        car.deoccupy_volume(volume)
+        "Груз успешно выгружен из вагона №#{car.car_number}."
+      rescue StandardError => e
+        raise "Ошибка: #{e.message}"
+      end
+    else
+      puts UIHelpers.red('Некорректный выбор.')
+    end
   end
 
   def find(train_number)

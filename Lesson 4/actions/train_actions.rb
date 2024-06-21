@@ -49,6 +49,7 @@ def assign_route_to_train(routes_manager, train_manager)
   begin
     result = train_manager.assign_route(train_number, route)
     puts UIHelpers.green(result)
+
   rescue StandardError => e
     puts UIHelpers.red(e.message)
   end
@@ -81,6 +82,46 @@ def stop_train(train_manager)
   train_manager.brake(train_number)
 end
 
+def unboard_passengers(train_manager)
+  train_number = UIHelpers.get_user_input('Выберите пассажирский поезд для посадки пассажиров:')
+  begin
+    result = train_manager.unboard_passengers(train_number)
+    puts UIHelpers.green(result)
+  rescue StandardError => e
+    puts UIHelpers.red(e.message)
+  end
+end
+
+def board_passengers(train_manager)
+  train_number = UIHelpers.get_user_input('Выберите пассажирский поезд для посадки пассажиров:')
+  begin
+    result = train_manager.board_passengers(train_number)
+    puts UIHelpers.green(result)
+  rescue StandardError => e
+    puts UIHelpers.red(e.message)
+  end
+end
+
+def add_cargo_volume(train_manager)
+  train_number = UIHelpers.get_user_input('Выберите грузовой поезд для загрузки:')
+  begin
+    result = train_manager.add_cargo_volume(train_number)
+    puts UIHelpers.green(result)
+  rescue StandardError => e
+    puts UIHelpers.red(e.message)
+  end
+end
+
+def remove_cargo_volume(train_manager)
+  train_number = UIHelpers.get_user_input('Выберите грузовой поезд для выгрузки:')
+  begin
+    result = train_manager.remove_cargo_volume(train_number)
+    puts UIHelpers.green(result)
+  rescue StandardError => e
+    puts UIHelpers.red(e.message)
+  end
+end
+
 def train_actions(train_manager, rail_car_manager, routes_manager)
   train_menu = Menu.new(
     {
@@ -94,6 +135,10 @@ def train_actions(train_manager, rail_car_manager, routes_manager)
       8 => 'Просмотреть список всех поездов',
       9 => 'Установить скорость поезда',
       10 => 'Остановить поезд',
+      11 => 'Посадить пассажиров на поезд',
+      12 => 'Высадить пассажиров из поезда',
+      13 => 'Загрузить груз в вагон',
+      14 => 'Выгрузить груз из вагона',
       0 => 'Вернуться в главное меню'
     }
   )
@@ -102,7 +147,7 @@ def train_actions(train_manager, rail_car_manager, routes_manager)
     choice = train_menu.get_choice
     next if choice.nil?
 
-    menu_options_requiring_train_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    menu_options_requiring_train_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
     show_list_of_trains(train_manager) if menu_options_requiring_train_list.include?(choice)
 
     case choice
@@ -126,6 +171,14 @@ def train_actions(train_manager, rail_car_manager, routes_manager)
       set_trains_speed(train_manager)
     when 10
       stop_train(train_manager)
+    when 11
+      board_passengers(train_manager)
+    when 12
+      unboard_passengers(train_manager)
+    when 13
+      add_cargo_volume(train_manager)
+    when 14
+      remove_cargo_volume(train_manager)
     when 0
       break
     else
@@ -141,7 +194,11 @@ def add_car_to_train(train_manager, rail_car_manager)
   available_cars = rail_car_manager.list_cars(free_filter: true)
   puts UIHelpers.green('Свободные вагоны')
   available_cars.each_with_index do |car, index|
-    puts UIHelpers.green("#{index + 1}. Вагон №#{car.car_number} типа #{car.class}")
+    if car.is_a?(PassengerCar)
+      puts UIHelpers.green("#{index + 1}. Вагон №#{car.car_number} типа #{car.class} (Мест: #{car.total_seats})")
+    else
+      puts UIHelpers.green("#{index + 1}. Вагон №#{car.car_number} типа #{car.class}")
+    end
   end
   car_index = UIHelpers.get_user_input('Введите порядковый номер вагона:').to_i - 1
   car = available_cars[car_index]

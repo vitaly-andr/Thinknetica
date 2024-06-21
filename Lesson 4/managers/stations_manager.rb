@@ -47,4 +47,21 @@ class StationsManager
     puts Station.instances
     Station.all.each { |station| puts UIHelpers.green(station.name) }
   end
+
+  def list_stations_and_trains
+    stations = Station.all
+    stations.each do |station|
+      puts "Станция: #{station.name}"
+      station.each_train do |train|
+        puts "  - Номер поезда: #{train.number}, тип: #{train.class}, кол-во вагонов: #{train.cars.length}"
+        train.cars.each_with_index do |car, index|
+          if car.is_a?(PassengerCar)
+            puts "    - Вагон №#{car.car_number} (тип: пассажирский), Свободных мест: #{car.available_seats}, Занятых мест: #{car.occupied_seats}"
+          elsif car.is_a?(CargoCar)
+            puts "    - Вагон №#{car.car_number} (тип: грузовой), Свободный объем: #{car.available_volume} м³, Занятый объем: #{car.occupied_volume} м³"
+          end
+        end
+      end
+    end
+  end
 end

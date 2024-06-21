@@ -14,8 +14,17 @@ class RailCarManager
     car = find(car_number)
     raise "Вагон с номером '#{car_number}' уже существует." if car
 
-    type == :passenger ? PassengerCar.new(car_number, manufacturer) : CargoCar.new(car_number, manufacturer)
-
+    if type == :passenger
+      total_seats_input= UIHelpers.get_user_input('Введите количество мест в пассажирском вагоне или по умолчанию 50:').chomp
+      total_seats = total_seats_input.empty? ? 50 : total_volume_input.to_i
+      PassengerCar.new(car_number, manufacturer, total_seats)
+    else
+      total_volume_input= UIHelpers.get_user_input('Введите общий объем в грузовом вагоне или по умолчанию 138:').chomp
+      total_volume = total_volume_input.empty? ? 138 : total_volume_input.to_i
+      puts 'Введен общий объем'
+      puts total_volume
+      CargoCar.new(car_number, manufacturer, total_volume)
+    end
     "Вагон '#{car_number}' успешно создан."
 
   end
