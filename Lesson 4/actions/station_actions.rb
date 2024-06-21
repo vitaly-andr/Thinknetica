@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../helpers/ui_helpers'
 require_relative '../menu'
 require_relative '../managers/stations_manager'
@@ -40,35 +42,47 @@ def rename_station(stations_manager)
   end
 end
 
-def station_actions(stations_manager)
-  station_menu = Menu.new(
-    {
-      1 => 'Создать станцию',
-      2 => 'Удалить станцию',
-      3 => 'Переименовать станцию',
-      4 => 'Вывести список всех станций',
-      0 => 'Вернуться в главное меню'
-    }
-  )
-  loop do
-    station_menu.display
-    choice = station_menu.get_choice
-    next if choice.nil?
+# Создаем меню для управления станциями как константу
+STATION_MENU = Menu.new(
+  {
+    1 => 'Создать станцию',
+    2 => 'Удалить станцию',
+    3 => 'Переименовать станцию',
+    4 => 'Вывести список всех станций',
+    0 => 'Вернуться в главное меню'
+  }
+).freeze
 
-    case choice
-    when 1
-      create_station(stations_manager)
-    when 2
-      delete_station(stations_manager)
-    when 3
-      rename_station(stations_manager)
-    when 4
+def initialize_station_actions(stations_manager)
+  {
+    1 => -> { create_station(stations_manager) },
+    2 => -> { delete_station(stations_manager) },
+    3 => -> { rename_station(stations_manager) },
+    4 => lambda {
       puts UIHelpers.green('Список всех станций:')
       stations_manager.list
-    when 0
-      break
-    else
-      puts UIHelpers.red('Something went wrong.')
-    end
+    },
+    0 => -> { false }
+  }.freeze
+end
+
+def process_station_menu_choice(choice, station_actions)
+  action = station_actions[choice]
+  if action
+    action.call
+  else
+    puts UIHelpers.red('Something went wrong!')
+  end
+  true
+end
+
+def station_actions(stations_manager)
+  station_actions = initialize_station_actions(stations_manager)
+  loop do
+    STATION_MENU.display
+    choice = STATION_MENU.get_choice
+    next if choice.nil?
+
+    break unless process_station_menu_choice(choice, station_actions)
   end
 end
