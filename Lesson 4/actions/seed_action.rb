@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SeedAction
   def seed(trains_manager, rail_car_manager, routes_manager, stations_manager)
     # Создание поездов с корректными номерами

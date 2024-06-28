@@ -46,11 +46,13 @@ MAIN_MENU = Menu.new(
 def process_menu_choice(choice)
   action = ACTIONS[choice]
   if action
-    action.call
+    result = action.call
+    return true if result.nil?
+
+    result
   else
     puts UIHelpers.red('Something went wrong!')
   end
-  true
 end
 
 def main_loop
@@ -59,6 +61,7 @@ def main_loop
     choice = MAIN_MENU.get_choice
     next if choice.nil?
 
+    puts "Choice: #{choice}"
     break unless process_menu_choice(choice)
   end
 end

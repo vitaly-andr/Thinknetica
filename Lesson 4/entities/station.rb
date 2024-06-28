@@ -1,7 +1,15 @@
 require_relative '../modules/instance_counter'
+require_relative '../modules/validation'
+require_relative '../modules/accessors'
 class Station
   include InstanceCounter
-  attr_accessor :name, :trains
+  include Validation
+  include Accessors
+
+  validate :name, :presence
+  validate :name, :type, String
+
+  attr_accessor_with_history :name, :trains
 
   class << self
     def all
@@ -44,11 +52,5 @@ class Station
   # Метод для перебора всех поездов на станции с применением блока
   def each_train(&block)
     @trains.each(&block)
-  end
-
-  private
-
-  def validate!
-    raise 'Имя станции не может быть пустым' if @name.nil? || @name.empty?
   end
 end

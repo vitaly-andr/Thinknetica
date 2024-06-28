@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../managers/routes_manager'
 require_relative '../managers/stations_manager'
 require_relative '../helpers/ui_helpers'

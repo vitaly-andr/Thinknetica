@@ -72,8 +72,8 @@ def process_station_menu_choice(choice, station_actions)
     action.call
   else
     puts UIHelpers.red('Something went wrong!')
+    true
   end
-  true
 end
 
 def station_actions(stations_manager)
@@ -82,7 +82,7 @@ def station_actions(stations_manager)
     STATION_MENU.display
     choice = STATION_MENU.get_choice
     next if choice.nil?
-
+    puts "Choice: #{choice}"
     break unless process_station_menu_choice(choice, station_actions)
   end
 end

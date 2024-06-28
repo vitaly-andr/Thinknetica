@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../entities/station'
 require_relative '../helpers/ui_helpers'
 class StationsManager

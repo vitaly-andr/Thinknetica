@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../helpers/ui_helpers'
 require_relative '../menu'
 require_relative '../managers/trains_manager'

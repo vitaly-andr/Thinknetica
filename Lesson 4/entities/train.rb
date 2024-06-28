@@ -1,14 +1,23 @@
 require_relative '../modules/manufacturer'
 require_relative '../modules/instance_counter'
+require_relative '../modules/accessors'
+require_relative '../modules/validation'
 class Train
   include Manufacturer
   include InstanceCounter
+  include Validation
+  include Accessors
 
-  attr_accessor :speed, :route
+  TRAIN_NUMBER_FORMAT = /^[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/.freeze
+  TRAIN_NUMBER_MESSAGE = 'номер поезда должен состоять из 3 букв или цифр, затем опционального дефиса и затем 2 букв или цифр.'.freeze
+
+
+  attr_accessor_with_history :speed, :route
   attr_reader :number, :cars, :current_station_index
 
-  # Так как напрямую объекты Train не создаются никогда я сделал инициализацию private (подклассы его видят)
-
+  validate :number, :presence
+  validate :number, :format, TRAIN_NUMBER_FORMAT, TRAIN_NUMBER_MESSAGE
+  validate :number, :type, String
   class << self
     def all
       @all ||= []
