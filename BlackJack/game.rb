@@ -54,6 +54,7 @@ class Game
           break
         end
       when '3'
+        dealer_play_final_cards
         reveal_cards
         break
       else
@@ -61,14 +62,26 @@ class Game
       end
     end
   end
+
   def dealer_turn
+    if @dealer.hand_value < 17 && @dealer.hand.size < 3
+      @dealer.take_card(@deck.deal_card)
+      puts 'Дилер берет карту.'
+    end
+    if @player.hand.size == 3
+      reveal_cards
+    else
+      player_turn
+    end
+  end
+
+  def dealer_play_final_cards
     while @dealer.hand_value < 17 && @dealer.hand.size < 3
       @dealer.take_card(@deck.deal_card)
       puts 'Дилер берет карту.'
     end
     reveal_cards
   end
-
   def reveal_cards
     puts "Карты дилера: #{dealer.display_hand(show_all: true)}"
     puts "Очки дилера: #{dealer.hand_value}"
